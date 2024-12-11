@@ -2,13 +2,15 @@ const express = require("express");
 const { db } = require("./firebaseConfig"); // Firebase config
 const cors = require("cors");
 const { Parser } = require("json2csv");
+const { User, Admin, Seller, Buyer, Role, Product, Coupon, Order, Cart, Address, Review } = require('./data_models');
+
 const app = express();
 const port = 5000;
 
 app.use(express.json());
 
 // List of allowed domains
-const allowedOrigins = ["http://localhost:3000", "https://online-store.web.app"];
+const allowedOrigins = ["http://localhost:5173", "https://online-store.web.app"];
 
 app.use(
     cors({
@@ -22,43 +24,6 @@ app.use(
     })
 );
 
-// Routes for customer authentication
-app.post("/signup", async (req, res) => {
-    try {
-        const { email, password, name } = req.body;
-
-        const userRecord = await admin.auth().createUser({
-            email,
-            password,
-        });
-
-        await db.collection("Customers").doc(userRecord.uid).set({
-            name,
-            email,
-            createdAt: new Date(),
-        });
-
-        res.status(201).json({ user: userRecord });
-    } catch (error) {
-        console.error("Error creating customer:", error);
-        res.status(500).json({ error: "Failed to create customer" });
-    }
-});
-
-app.post("/signin", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        const userRecord = await admin.auth().getUserByEmail(email);
-        // Handle password verification using Firebase Client SDK or custom authentication.
-
-        res.status(200).json({ user: userRecord });
-    } catch (error) {
-        console.error("Error signing in customer:", error);
-        res.status(500).json({ error: "Failed to sign in customer" });
-    }
-});
-
 app.get("/", (req, res) => {
     res.send("Welcome to Shop Hebron! The API is up and running. Use the available routes to manage customers, products, and orders.");
 });
@@ -70,6 +35,7 @@ app.post("/Users", async (req, res) => {
         const { email, name, address } = req.body;
 
         const newUser = {
+            ...User,
             email,
             name,
             address,
@@ -178,6 +144,7 @@ app.post("/Products", async (req, res) => {
         const { name, price, stock, description } = req.body;
 
         const newProduct = {
+            ...Product,
             name,
             price,
             stock,
@@ -227,6 +194,7 @@ app.post("/Orders", async (req, res) => {
         const { customerId, items, total } = req.body;
 
         const newOrder = {
+            ...Order,
             customerId,
             items,
             total,
