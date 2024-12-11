@@ -1,16 +1,4 @@
-# Ignore the Firebase service account JSON key
-sample-project-99753-firebase-adminsdk-zyrh7-e9ba526add.json.json
-
-# Ignore .env files
+# .gitignore
 .env
-
-# Node.js dependencies
-node_modules/
-
-# Build outputs
-/dist
-/build
-
-# IDE and OS-specific files
-.vscode/
-.DS_Store
+sample-project-99753-firebase-adminsdk-zyrh7-e9ba526add.json
+node_modules
